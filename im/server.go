@@ -1,11 +1,11 @@
 package im
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/golang/protobuf/proto"
 	"sync"
-	"vortex/model"
+	"vortex/im/protocol"
 	"vortex/service"
 )
 
@@ -65,18 +65,17 @@ func (s *Server) SyncMessage() {
 }
 
 func (s *Server) Send(data []byte) error {
-	message := model.Message{}
+	message := &protocol.Message{}
 	fmt.Println("run send .....")
-	err := json.Unmarshal(data, &message)
+	err := proto.Unmarshal(data, message)
 	if err != nil {
-		//log.Fatal("消息格式错误", err)
 		return err
 	}
 	switch message.Type {
-	case model.MSG_TYPE_F:
-		err = s.friendMessage(message.ToID, data)
-	case model.MSG_TYPE_G:
-		err = s.groupMessage(message.ToID, data)
+	case protocol.MessageType_FRIEND:
+		err = s.friendMessage(message.ToId, data)
+	case protocol.MessageType_GROUP:
+		err = s.groupMessage(message.ToId, data)
 	}
 	return err
 }

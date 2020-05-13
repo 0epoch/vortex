@@ -1,0 +1,15 @@
+syntax = "proto3";
+go_package protocol;
+
+message Message {
+    int64 from_uid = 1;
+    string from_username = 2;
+    int64 to_id = 3;
+    string content = 4;
+    MessageType type = 5;
+}
+
+enum MessageType {
+    FRIEND = 0;
+    GROUP = 1;
+}
